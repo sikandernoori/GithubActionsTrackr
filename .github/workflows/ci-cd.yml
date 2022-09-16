@@ -1,7 +1,7 @@
 name: "Flutter App -> Build(Android & IOS), Test(Firebase TestLab) & Release"
 on:
   push:
-  
+
   release:
     types: [published]
 jobs:
@@ -84,7 +84,7 @@ jobs:
           api-private-key: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
   release:
     name: release
-    needs: [build-android, upload_testflight]
+    needs: [upload_testflight]
     runs-on: ubuntu-latest
 
     steps:
