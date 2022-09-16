@@ -36,8 +36,8 @@ jobs:
         run: python code_sign.py ${{ secrets.TEAM_ID }} ${{ secrets.APPSTORE_ISSUER_ID }}
       - name: Get Flutter Pub
         run: flutter pub get
-      - name: flutter build IOS
-        run: flutter build ios --release --no-codesign --no-sound-null-safety
+      # - name: flutter build IOS
+      #   run: flutter build ios --release --no-codesign --no-sound-null-safety
       - name: Restore Pods cache
         uses: actions/cache@v2
         with:
