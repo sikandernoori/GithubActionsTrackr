@@ -1,0 +1,116 @@
+name: "Flutter App -> Build(Android & IOS), Test(Firebase TestLab) & Release"
+on:
+  push:
+  
+  release:
+    types: [published]
+jobs:
+  build-ios:
+    name: Build IOS
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: master
+      - name: add java
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: '8'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.3.0'
+          channel: 'stable'
+      - name: Setup Ruby (bundle)
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.6
+          bundler-cache: true
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: install pbxproj
+        run: pip install pbxproj
+      - name: setup for Manul code sign
+        run: python code_sign.py ${{ secrets.TEAM_ID }} ${{ secrets.APPSTORE_ISSUER_ID }}
+      - name: Get Flutter Pub
+        run: flutter pub get
+      - name: Restore Pods cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ios/Pods
+            ~/Library/Caches/CocoaPods
+            ~/.cocoapods
+          key: ${{ runner.os }}-pods-${{ hashFiles('ios/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-
+      - name: Install Pods
+        run: cd ios && pod install --repo-update && cd ..
+      - name: Build IOS App
+        uses: yukiarrr/ios-build-action@v1.5.0
+        with:
+          project-path: ./ios/Runner.xcodeproj
+          p12-base64: ${{ secrets.P12_BASE64 }}
+          mobileprovision-base64: ${{ secrets.MOBILEPROVISION_BASE64 }}
+          code-signing-identity: "iPhone Distribution"
+          team-id: ${{ secrets.TEAM_ID }}
+          workspace-path: ./ios/Runner.xcworkspace
+          scheme: "Runner"
+      - name: upload ipa
+        uses: actions/upload-artifact@v1
+        with:
+          name: ipa-production-release
+          path: output.ipa
+  upload_testflight:
+    name: TestFlight upload
+    needs: build-ios
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: master
+      - name: Download ipa
+        uses: actions/download-artifact@v1
+        with:
+          name: ipa-production-release
+      - name: Upload app to TestFlight
+        uses: apple-actions/upload-testflight-build@v1
+        with:
+          app-path: './ipa-production-release/output.ipa'
+          issuer-id: ${{ secrets.APPSTORE_ISSUER_ID }}
+          api-key-id: ${{ secrets.APPSTORE_API_KEY_ID }}
+          api-private-key: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
+  release:
+    name: release
+    needs: [build-android, upload_testflight]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: master
+      - name: Download app bundle
+        uses: actions/download-artifact@v1
+        with:
+          name: app-production-release
+      - name: Download ipa
+        uses: actions/download-artifact@v1
+        with:
+          name: ipa-production-release
+      - name: Push to Releases
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "./app-production-release/app-release.aab, ./ipa-production-release/output.ipa"
+          tag: v0.0.1+6 #-${{ github.run_number }} #TODO(skandar) pick version number from pubspec.yml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          allowUpdates: true
+  sendNotification:
+        name: Send Notification
+        needs: release
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@v2
+        - name: Echo Notification
+          run: echo "Notificaton sent !"
