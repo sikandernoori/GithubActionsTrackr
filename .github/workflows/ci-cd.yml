@@ -13,7 +13,7 @@ jobs:
         with:
           ref: master
       - name: print XCode version
-        run: echo /usr/bin/xcodebuild -version
+        run: /usr/bin/xcodebuild -version
       - name: add java
         uses: actions/setup-java@v2
         with:
