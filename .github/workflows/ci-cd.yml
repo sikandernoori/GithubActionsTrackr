@@ -84,7 +84,7 @@ jobs:
       - name: update export options
         run:  /usr/libexec/PlistBuddy -c 'Add :provisioningProfiles:com.example.githubactionstrackr string github_actions' ios/export-options.plist 
       - name: create ipa
-        run: flutter build ipa --export-options-plist=ios/export-options.plist -allowProvisioningUpdates --release $ARGS
+        run: flutter build ipa --export-options-plist=ios/export-options.plist --release $ARGS
         env:
           GIT_COMMIT_DATE: $(git log -n1 --date=short --format="%ad")
           GIT_COMMIT_HASH: $(git log -n1 --date=short --format="%h")
