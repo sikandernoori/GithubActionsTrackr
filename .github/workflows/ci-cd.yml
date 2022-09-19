@@ -50,9 +50,9 @@ jobs:
           security import $CERTIFICATE_PATH -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
           security list-keychain -d user -s $KEYCHAIN_PATH
 
-          # apply provisioning profile
-          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
+          # # apply provisioning profile
+          # mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          # cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
       # - name: Install Python
       #   uses: actions/setup-python@v4
       #   with:
