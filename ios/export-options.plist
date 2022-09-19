@@ -4,10 +4,5 @@
 <dict>
 	<key>method</key>
 	<string>app-store</string>
-	<key>provisioningProfiles</key>
-	<dict>
-		<key>com.example.githubactionstrackr</key>
-		<string>github_actions</string>
-	</dict>
 </dict>
 </plist>
