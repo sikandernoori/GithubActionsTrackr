@@ -99,17 +99,12 @@ jobs:
       - name: Export archive
         run: xcodebuild -exportArchive -archivePath build/ios/archive/Runner.xcarchive -exportPath build/ios/ -exportOptionsPlist ios/export-options.plist
       - name: Upload to testflight
-        run: xcrun altool --show-progress --upload-app --type ios -f build/ios/app.ipa --apiKey ${{ secrets.APPSTORE_API_KEY_ID }} --apiIssuer ${{ secrets.APPSTORE_ISSUER_ID }}
+        run: xcrun altool --show-progress --upload-app --type ios -f build/ios/*.ipa --apiKey ${{ secrets.APPSTORE_API_KEY_ID }} --apiIssuer ${{ secrets.APPSTORE_ISSUER_ID }}
       - name: upload ipa
         uses: actions/upload-artifact@v1
         with:
           name: ipa-production-release
-          path: output.ipa
-      - name: upload ipa
-        uses: actions/upload-artifact@v1
-        with:
-          name: ipa-production-release
-          path: output.ipa
+          path: build/ios/*.ipa
   upload_testflight:
     name: TestFlight upload
     needs: build-ios
@@ -125,7 +120,7 @@ jobs:
       - name: Upload app to TestFlight
         uses: apple-actions/upload-testflight-build@v1
         with:
-          app-path: './ipa-production-release/output.ipa'
+          app-path: './ipa-production-release/*.ipa'
           issuer-id: ${{ secrets.APPSTORE_ISSUER_ID }}
           api-key-id: ${{ secrets.APPSTORE_API_KEY_ID }}
           api-private-key: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}

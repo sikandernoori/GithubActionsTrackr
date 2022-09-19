@@ -2,7 +2,7 @@ name: githubactionstrackr
 description: A new Flutter project.
 
 
-version: 1.0.0+3
+version: 1.0.0+4
 
 environment:
   sdk: ">=2.11.0 <3.0.0"
