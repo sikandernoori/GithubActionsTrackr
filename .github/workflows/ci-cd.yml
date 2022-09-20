@@ -104,7 +104,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ipa-production-release
-          path: ./build/ios/ipa/*.ipa
+          path: ./build/ios/ipa/githubactionstrackr.ipa
   upload_testflight:
     name: TestFlight upload
     needs: build-ios
@@ -122,7 +122,7 @@ jobs:
       - name: Upload app to TestFlight
         uses: apple-actions/upload-testflight-build@v1
         with:
-          app-path: ./ipa-production-release/*.ipa
+          app-path: ./ipa-production-release/githubactionstrackr.ipa
           issuer-id: ${{ secrets.APPSTORE_ISSUER_ID }}
           api-key-id: ${{ secrets.APPSTORE_API_KEY_ID }}
           api-private-key: ${{ secrets.APPSTORE_API_PRIVATE_KEY }}
