@@ -150,7 +150,7 @@ jobs:
         with:
           allowUpdates: true
           artifacts: "foo.txt"
-          tag: "baar"
+          tag: v1.1.1+116
           token: ${{ secrets.GITHUB_TOKEN }}
   sendNotification:
         name: Send Notification
