@@ -101,7 +101,7 @@ jobs:
       # - name: Upload to testflight
       #   run: xcrun altool --show-progress --upload-app --type ios -f build/ios/*.ipa --apiKey ${{ secrets.APPSTORE_API_KEY_ID }} --apiIssuer ${{ secrets.APPSTORE_ISSUER_ID }}
       - name: upload ipa
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: ipa-production-release
           path: ./build/ios/ipa/*.ipa
