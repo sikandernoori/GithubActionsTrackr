@@ -75,16 +75,6 @@ jobs:
             ${{ runner.os }}-pods-
       - name: Install Pods
         run: cd ios && pod install --repo-update && cd ..
-      # - name: Build IOS App
-      #   uses: yukiarrr/ios-build-action@v1.5.0
-      #   with:
-      #     project-path: ./ios/Runner.xcodeproj
-      #     p12-base64: ${{ secrets.P12_BASE64 }}
-      #     mobileprovision-base64: ${{ secrets.MOBILEPROVISION_BASE64 }}
-      #     code-signing-identity: "iPhone Distribution"
-      #     team-id: ${{ secrets.TEAM_ID }}
-      #     workspace-path: ./ios/Runner.xcworkspace
-      #     scheme: "Runner"
       - name: update export options
         run:  /usr/libexec/PlistBuddy -c 'Add :provisioningProfiles:com.trackr.githubactionstrackr string ${{ secrets.MOBILEPROVISION_NAME }}' ios/export-options.plist
       - name: setup for Manul code sign
@@ -96,10 +86,19 @@ jobs:
           GIT_COMMIT_HASH: $(git log -n1 --date=short --format="%h")
           FLUTTER_VERSION: ${$(flutter --version):8:6}
           ARGS: "--dart-define=TRACKR_GIT_COMMIT_DATE=$GIT_COMMIT_DATE --dart-define=TRACKR_GIT_COMMIT_HASH=$GIT_COMMIT_HASH --dart-define=TRACKR_FLUTTER_VERSION=${FLUTTER_VERSION}"
-      - name: Export archive
-        run: xcodebuild -exportArchive -archivePath build/ios/archive/Runner.xcarchive -exportPath build/ios/ -exportOptionsPlist ios/export-options.plist
-      # - name: Upload to testflight
-      #   run: xcrun altool --show-progress --upload-app --type ios -f build/ios/*.ipa --apiKey ${{ secrets.APPSTORE_API_KEY_ID }} --apiIssuer ${{ secrets.APPSTORE_ISSUER_ID }}
+      - name: setup for Manul code sign Re-Try 1
+        if: ${{ failure() }}
+        run: python code_sign.py ${{ secrets.TEAM_ID }} ${{ secrets.APPSTORE_ISSUER_ID }} ${{ secrets.MOBILEPROVISION_NAME }}
+      - name: create ipa Re-Try 1
+        if: ${{ failure() }}
+        run: flutter build ipa --export-options-plist=ios/export-options.plist --release $ARGS
+        env:
+          GIT_COMMIT_DATE: $(git log -n1 --date=short --format="%ad")
+          GIT_COMMIT_HASH: $(git log -n1 --date=short --format="%h")
+          FLUTTER_VERSION: ${$(flutter --version):8:6}
+          ARGS: "--dart-define=TRACKR_GIT_COMMIT_DATE=$GIT_COMMIT_DATE --dart-define=TRACKR_GIT_COMMIT_HASH=$GIT_COMMIT_HASH --dart-define=TRACKR_FLUTTER_VERSION=${FLUTTER_VERSION}"
+      # - name: Export archive
+      #   run: xcodebuild -exportArchive -archivePath build/ios/archive/Runner.xcarchive -exportPath build/ios/ -exportOptionsPlist ios/export-options.plist
       - name: upload ipa
         uses: actions/upload-artifact@v3
         with:
