@@ -148,7 +148,7 @@ jobs:
         with:
           allowUpdates: true
           artifacts: "foo.txt"
-          tag: $TAG_NAME
+          tag: "$TAG_NAME"
           token: ${{ secrets.GITHUB_TOKEN }}
         env:
           TAG_NAME: ${GITHUB_REF#refs/*/}
