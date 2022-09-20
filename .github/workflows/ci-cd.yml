@@ -1,6 +1,6 @@
 name: "Buils(IOS) & upload to TestFlight"
 on:
-  # push:
+  push:
 
   release:
     types: [published]
