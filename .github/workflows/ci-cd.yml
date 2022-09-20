@@ -148,7 +148,7 @@ jobs:
         with:
           allowUpdates: true
           artifacts: "foo.txt"
-          tag:  ${GITHUB_REF#refs/*/}
+          # tag:  ${GITHUB_REF#refs/*/}
           token: ${{ secrets.GITHUB_TOKEN }}
   sendNotification:
         name: Send Notification
