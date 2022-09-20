@@ -144,14 +144,12 @@ jobs:
       - name: Display structure of downloaded files
         run: ls -R
       - name: Push to Releases
-        uses: ncipollo/release-action@v1
+        uses: ncipollo/release-action@v1.10.0
         with:
           allowUpdates: true
           artifacts: "foo.txt"
-          tag:  ${{ env.TAG_NAME }}
+          tag:  ${GITHUB_REF#refs/*/}
           token: ${{ secrets.GITHUB_TOKEN }}
-        env:
-          TAG_NAME: ${GITHUB_REF#refs/*/}
   sendNotification:
         name: Send Notification
         needs: release
