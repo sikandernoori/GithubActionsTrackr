@@ -87,9 +87,9 @@ jobs:
       #     scheme: "Runner"
       # - name: setup for Manul code sign
       #   run: python code_sign.py ${{ secrets.TEAM_ID }} ${{ secrets.APPSTORE_ISSUER_ID }}
-      # - name: update export options
-      #   run:  /usr/libexec/PlistBuddy -c 'Add :provisioningProfiles:com.example.githubactionstrackr string github_actions' ios/export-options.plist 
-      # - name: create ipa
+      - name: update export options
+        run:  /usr/libexec/PlistBuddy -c 'Add :provisioningProfiles:com.example.githubactionstrackr string github_actions' ios/export-options.plist 
+      - name: create ipa
         run: flutter build ipa --export-options-plist=ios/export-options.plist --release $ARGS
         env:
           GIT_COMMIT_DATE: $(git log -n1 --date=short --format="%ad")
