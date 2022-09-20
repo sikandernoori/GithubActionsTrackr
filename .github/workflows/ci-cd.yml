@@ -117,6 +117,8 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: ipa-production-release
+      - name: Display structure of downloaded files
+        run: ls -R
       - name: Upload app to TestFlight
         uses: apple-actions/upload-testflight-build@v1
         with:
@@ -137,6 +139,8 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: ipa-production-release
+      - name: Display structure of downloaded files
+        run: ls -R
       - name: Push to Releases
         uses: ncipollo/release-action@v1
         with:
