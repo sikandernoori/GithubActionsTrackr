@@ -86,7 +86,7 @@ jobs:
       #     workspace-path: ./ios/Runner.xcworkspace
       #     scheme: "Runner"
       - name: update export options
-        run:  /usr/libexec/PlistBuddy -c 'Add :provisioningProfiles:com.example.githubactionstrackr string github_actions' ios/export-options.plist
+        run:  /usr/libexec/PlistBuddy -c 'Add :provisioningProfiles:com.trackr.githubactionstrackr string github_actions' ios/export-options.plist
       - name: setup for Manul code sign
         run: python code_sign.py ${{ secrets.TEAM_ID }} ${{ secrets.APPSTORE_ISSUER_ID }}
       - name: create ipa

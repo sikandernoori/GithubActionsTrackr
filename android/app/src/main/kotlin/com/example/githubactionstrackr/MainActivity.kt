@@ -1,4 +1,4 @@
-package com.example.githubactionstrackr
+package com.trackr.githubactionstrackr
 
 import io.flutter.embedding.android.FlutterActivity
 
