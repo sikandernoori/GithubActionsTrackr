@@ -150,8 +150,10 @@ jobs:
         with:
           allowUpdates: true
           artifacts: "foo.txt"
-          tag: v1.1.1+116
+          tag: TAG_NAME
           token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          TAG_NAME: ${GITHUB_REF#refs/*/}
   sendNotification:
         name: Send Notification
         needs: release
