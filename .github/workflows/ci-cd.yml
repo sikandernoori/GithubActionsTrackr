@@ -86,9 +86,9 @@ jobs:
       #     workspace-path: ./ios/Runner.xcworkspace
       #     scheme: "Runner"
       - name: update export options
-        run:  /usr/libexec/PlistBuddy -c 'Add :provisioningProfiles:com.trackr.githubactionstrackr string github_actions' ios/export-options.plist
+        run:  /usr/libexec/PlistBuddy -c 'Add :provisioningProfiles:com.trackr.githubactionstrackr string ${{ secrets.MOBILEPROVISION_NAME }}' ios/export-options.plist
       - name: setup for Manul code sign
-        run: python code_sign.py ${{ secrets.TEAM_ID }} ${{ secrets.APPSTORE_ISSUER_ID }}
+        run: python code_sign.py ${{ secrets.TEAM_ID }} ${{ secrets.APPSTORE_ISSUER_ID }} ${{ secrets.MOBILEPROVISION_NAME }}
       - name: create ipa
         run: flutter build ipa --export-options-plist=ios/export-options.plist --release $ARGS
         env:
