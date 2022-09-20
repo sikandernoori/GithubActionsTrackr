@@ -26,12 +26,12 @@ jobs:
         with:
           ruby-version: 2.6
           bundler-cache: true
-      - name: Install Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-      - name: install pbxproj
-        run: pip install pbxproj
+      # - name: Install Python
+      #   uses: actions/setup-python@v4
+      #   with:
+      #     python-version: '3.10'
+      # - name: install pbxproj
+      #   run: pip install pbxproj
       - name: Install the Apple certificate and provisioning profile
         env:
           P12_BASE64: ${{ secrets.P12_BASE64 }}
