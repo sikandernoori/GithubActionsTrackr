@@ -139,12 +139,10 @@ jobs:
       #   uses: actions/download-artifact@v1
       #   with:
       #     name: ipa-production-release
-      # - name: Display structure of downloaded files
-      #   run: ls -R
       - name: add file
         run: echo 'Hello, world.' >foo.txt
-      - name: print ref name
-        run: echo ${GITHUB_REF#refs/*/}
+      - name: Display structure of downloaded files
+        run: ls -R
       - name: Push to Releases
         uses: ncipollo/release-action@v1
         with:
