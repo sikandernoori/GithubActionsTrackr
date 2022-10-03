@@ -1,16 +1,16 @@
 # githubactionstrackr
 
-A new Flutter project.
+CI-CD of a Flutter project.
 
-## Getting Started
+#### Github secrets for Auto release.
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+| Secrets | Purpose | Where to generate | 
+| --- | --- | --- |
+| APPSTORE_API_KEY_ID | Upload app to TestFlight | https://appstoreconnect.apple.com/access/api |
+| APPSTORE_API_PRIVATE_KEY | Upload app to TestFlight | https://appstoreconnect.apple.com/access/api |
+| APPSTORE_ISSUER_ID | Upload app to TestFlight | https://appstoreconnect.apple.com/access/api |
+| MOBILEPROVISION_BASE64 | App signing | https://developer.apple.com/account/resources/profiles/list |
+| MOBILEPROVISION_NAME | App signing | https://developer.apple.com/account/resources/profiles/list |
+| P12_BASE64 | App signing | Export P12 from KeyChain on Mac device after installing certificate from -> https://developer.apple.com/account/resources/certificates/list |
+| TEAM_ID | App signing | https://developer.apple.com/account/#!/membership/ |
