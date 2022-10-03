@@ -6,7 +6,7 @@ CI-CD of a Flutter project.
 
 
 | Secrets | Purpose | Where to generate | 
-| --- | --- | --- |
+| --- | ---- | --- |
 | APPSTORE_API_KEY_ID | Upload app to TestFlight | https://appstoreconnect.apple.com/access/api |
 | APPSTORE_API_PRIVATE_KEY | Upload app to TestFlight | https://appstoreconnect.apple.com/access/api |
 | APPSTORE_ISSUER_ID | Upload app to TestFlight | https://appstoreconnect.apple.com/access/api |
