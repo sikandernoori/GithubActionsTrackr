@@ -25,11 +25,3 @@ jobs:
         with:
           flutter-version: $flutter_version
           channel: 'stable'
-   
-        name: Send Notification
-        needs: release
-        runs-on: ubuntu-latest
-        steps:
-        - uses: actions/checkout@v2
-        - name: Echo Notification
-          run: echo "Notificaton sent !" #TODO(skandar) send Notification via e-mail, Slack, Discord etc. if needed
