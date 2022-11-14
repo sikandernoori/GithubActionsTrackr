@@ -1,7 +1,6 @@
 name: "Buils(IOS) & upload to TestFlight"
 on:
-  # push:
-
+  push:
   release:
     types: [published]
 jobs:
@@ -19,9 +18,9 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '8'
-      - name: echio flutter evrsion
+      - name: echo flutter evrsion
         run: echo $flutter_version
-      - name:
+      - name: Install flutter
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: $flutter_version
