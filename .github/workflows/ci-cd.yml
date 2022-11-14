@@ -18,9 +18,6 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '8'
-      - name: echo flutter evrsion
-        run: echo $flutter_version
-      - name: Install flutter
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: $flutter_version
