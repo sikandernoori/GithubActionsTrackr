@@ -10,11 +10,6 @@ jobs:
       - uses: actions/checkout@v3
         with:
           ref: master
-      - name: add java
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: '8'
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: ${{ env.flutter_version }}
