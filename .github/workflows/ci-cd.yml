@@ -82,7 +82,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ipa-production-release
-          path: ./build/ios/ipa/app.ipa
+          path: ./build/ios/ipa/githubactionstrackr.ipa
   upload_testflight:
     name: TestFlight upload
     needs: build-ios
@@ -96,7 +96,7 @@ jobs:
         with:
           name: ipa-production-release
       - name: Upload app to TestFlight
-        run: xcrun altool --upload-app --type ios -f ./ipa-production-release/app.ipa --apiKey ${{ secrets.APPSTORE_API_PRIVATE_KEY }} --apiIssuer ${{ secrets.APPSTORE_ISSUER_ID }}
+        run: xcrun altool --upload-app --type ios -f ./ipa-production-release/githubactionstrackr.ipa --apiKey ${{ secrets.APPSTORE_API_PRIVATE_KEY }} --apiIssuer ${{ secrets.APPSTORE_ISSUER_ID }}
   release:
     name: release
     needs: [upload_testflight]
@@ -114,7 +114,7 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          artifacts: "./ipa-production-release/app.ipa"
+          artifacts: "./ipa-production-release/githubactionstrackr.ipa"
           token: ${{ secrets.GITHUB_TOKEN }}
   sendNotification:
         name: Send Notification
