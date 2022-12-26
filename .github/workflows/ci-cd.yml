@@ -11,7 +11,7 @@ jobs:
         with:
           ref: master
       - name: add java
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '8'
