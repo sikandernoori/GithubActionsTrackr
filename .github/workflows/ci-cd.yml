@@ -3,7 +3,7 @@ on: [push]
 jobs:
   build-ios:
     name: Build IOS
-    runs-on: macos-latest
+    runs-on: macos-11
     env:
       flutter_version: 3.3.2
     steps:
@@ -69,13 +69,3 @@ jobs:
         run: python code_sign.py ${{ secrets.TEAM_ID }} ${{ secrets.APPSTORE_ISSUER_ID }} ${{ secrets.MOBILEPROVISION_NAME }}
       - name: create ipa
         run: flutter build ipa --export-options-plist=ios/export-options.plist --release --dart-define=TRACKR_GIT_COMMIT_DATE=$(git log -n1 --date=short --format="%ad") --dart-define=TRACKR_GIT_COMMIT_HASH=$(git log -n1 --date=short --format="%h") --dart-define=TRACKR_FLUTTER_VERSION=${{ env.flutter_version }}
-      - name: setup for Manul code sign Re-Try 1
-        if: ${{ failure() }}
-        run: python code_sign.py ${{ secrets.TEAM_ID }} ${{ secrets.APPSTORE_ISSUER_ID }} ${{ secrets.MOBILEPROVISION_NAME }}
-      - name: create ipa - 1
-        run: flutter build ipa --export-options-plist=ios/export-options.plist --release --dart-define=TRACKR_GIT_COMMIT_DATE=$(git log -n1 --date=short --format="%ad") --dart-define=TRACKR_GIT_COMMIT_HASH=$(git log -n1 --date=short --format="%h") --dart-define=TRACKR_FLUTTER_VERSION=${{ env.flutter_version }}
-      - name: upload ipa
-        uses: actions/upload-artifact@v3
-        with:
-          name: ipa-production-release
-          path: ./build/ios/ipa/githubactionstrackr.ipa
