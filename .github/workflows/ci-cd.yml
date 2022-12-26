@@ -1,9 +1,14 @@
 name: "Buils(IOS) & upload to TestFlight"
-on: [push]
+on:
+  push:
+    branches:
+      - master
+  release:
+    types: [published]
 jobs:
   build-ios:
     name: Build IOS
-    runs-on: macos-12
+    runs-on: macos-11
     env:
       flutter_version: 3.3.2
     steps:
@@ -36,16 +41,20 @@ jobs:
           PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
           KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
           P12_PASSWORD=""
+
           # import certificate and provisioning profile from secrets
           echo -n "$P12_BASE64" | base64 --decode --output $CERTIFICATE_PATH
           echo -n "$MOBILEPROVISION_BASE64" | base64 --decode --output $PP_PATH
+
           # create temporary keychain
           security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
           security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
           security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+
           # import certificate to keychain
           security import $CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
           security list-keychain -d user -s $KEYCHAIN_PATH
+
           # apply provisioning profile
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
@@ -63,9 +72,57 @@ jobs:
             ${{ runner.os }}-pods-
       - name: Install Pods
         run: cd ios && pod install --repo-update && cd ..
-      - name: update export options
-        run:  /usr/libexec/PlistBuddy -c 'Add :provisioningProfiles:com.trackr.githubactionstrackr string ${{ secrets.MOBILEPROVISION_NAME }}' ios/export-options.plist
       - name: setup for Manul code sign
         run: python code_sign.py ${{ secrets.TEAM_ID }} ${{ secrets.APPSTORE_ISSUER_ID }} ${{ secrets.MOBILEPROVISION_NAME }}
+      - name: update export options for manual provisioning
+        run:  /usr/libexec/PlistBuddy -c 'Add :provisioningProfiles:ee.randomforest.trackr string ${{ secrets.MOBILEPROVISION_NAME }}' ios/export-options.plist
       - name: create ipa
         run: flutter build ipa --export-options-plist=ios/export-options.plist --release --dart-define=TRACKR_GIT_COMMIT_DATE=$(git log -n1 --date=short --format="%ad") --dart-define=TRACKR_GIT_COMMIT_HASH=$(git log -n1 --date=short --format="%h") --dart-define=TRACKR_FLUTTER_VERSION=${{ env.flutter_version }}
+      - name: upload ipa
+        uses: actions/upload-artifact@v3
+        with:
+          name: ipa-production-release
+          path: ./build/ios/ipa/app.ipa
+  upload_testflight:
+    name: TestFlight upload
+    needs: build-ios
+    runs-on: macos-11
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: master
+      - name: Download ipa
+        uses: actions/download-artifact@v1
+        with:
+          name: ipa-production-release
+      - name: Upload app to TestFlight
+        run: xcrun altool --upload-app --type ios -f ./ipa-production-release/app.ipa --apiKey ${{ secrets.APPSTORE_API_PRIVATE_KEY }} --apiIssuer ${{ secrets.APPSTORE_ISSUER_ID }}
+  release:
+    name: release
+    needs: [upload_testflight]
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: master
+      - name: Download ipa
+        uses: actions/download-artifact@v1
+        with:
+          name: ipa-production-release
+      - name: Push to Releases
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          artifacts: "./ipa-production-release/app.ipa"
+          token: ${{ secrets.GITHUB_TOKEN }}
+  sendNotification:
+        name: Send Notification
+        needs: release
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@v3
+          with:
+            ref: master
+        - name: Send Email OR Notification
+          run: echo "Notificaton sent !" #TODO(skandar) send Notification via e-mail, Slack, Discord etc. if needed
