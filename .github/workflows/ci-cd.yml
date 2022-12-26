@@ -52,7 +52,7 @@ jobs:
       - name: Get Flutter Pub
         run: flutter pub get
       - name: Restore Pods cache
-        uses: actions/cache@v2
+        uses: actions/cache/restore@v3
         with:
           path: |
             ios/Pods
